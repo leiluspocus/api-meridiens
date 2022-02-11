@@ -1,20 +1,26 @@
+import { useState } from 'react'
 import Link from 'next/link';
 import dbConnect from '../lib/dbConnect';
 import Point from '../models/Point';
 
 const Index = ({ points }) => {
-	const randomInt = Math.ceil(Math.random() * (points.length - 1));
+  const [randomInt, setRandom] = useState(0);
   const point = points[randomInt];
+
+
+  const randomize = () => {
+    setRandom(Math.ceil(Math.random() * (points.length - 1)));
+  }
   return (
     <>
-      <div key={point._id}>
-        <button>🔮</button> <br />
+      <div key={point._id} className="main-container">
+        <button onClick={randomize}>🔮</button> <br />
         <div className="card">
           <h5 className="point-id">{point.idPoint}</h5>
           <div className="main-content">
             <p className="point-name">{point.name}</p>
-            <p className="localization">Localisation: {point.localization}</p>
-            <p className="roles">Rôles: {point.roles}</p>
+            <p className="localization"><span>Localisation</span>{point.localization}</p>
+            <p className="roles"><span>Rôles</span> {point.roles}</p>
 
             <div className="btn-container">
               <Link href="/[id]/edit" as={`/${point._id}/edit`}>

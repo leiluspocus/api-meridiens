@@ -24,21 +24,16 @@ const PointPage = ({ point }) => {
 	return (
 		<div key={point._id}>
 			<div className="card">
-				<img src={point.image_url} />
-				<h5 className="point-name">{point.name}</h5>
+				<h5 className="point-id">{point.idPoint}</h5>
 				<div className="main-content">
 					<p className="point-name">{point.name}</p>
-					<p className="owner">Owner: {point.owner_name}</p>
-
-					{/* Extra Point Info: Likes and Dislikes */}
-					<div className="likes info">
-						<p className="label">Likes</p>
-						<ul>{point.likes.map((data, index) => <li key={index}>{data} </li>)}</ul>
-					</div>
-					<div className="dislikes info">
-						<p className="label">Dislikes</p>
-						<ul>{point.dislikes.map((data, index) => <li key={index}>{data} </li>)}</ul>
-					</div>
+					<p className="localization">
+						<span>Localisation</span>
+						{point.localization}
+					</p>
+					<p className="roles">
+						<span>Rôles</span> {point.roles}
+					</p>
 
 					<div className="btn-container">
 						<Link href="/[id]/edit" as={`/${point._id}/edit`}>

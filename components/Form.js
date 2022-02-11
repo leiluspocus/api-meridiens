@@ -17,10 +17,10 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
 
   /* The PUT method edits an existing entry in the mongodb database. */
   const putData = async (form) => {
-    const { id } = router.query
+    const { idPoint } = router.query
 
     try {
-      const res = await fetch(`/api/points/${id}`, {
+      const res = await fetch(`/api/points/${idPoint}`, {
         method: 'PUT',
         headers: {
           Accept: contentType,
@@ -36,7 +36,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
 
       const { data } = await res.json()
 
-      mutate(`/api/points/${id}`, data, false) // Update the local data without a revalidation
+      mutate(`/api/points/${idPoint}`, data, false) // Update the local data without a revalidation
       router.push('/')
     } catch (error) {
       setMessage('Failed to update point')
@@ -57,6 +57,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
 
       // Throw error with status code in case Fetch API req failed
       if (!res.ok) {
+        console.log(res);
         throw new Error(res.status)
       }
 
@@ -92,8 +93,9 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
   const formValidate = () => {
     let err = {}
     if (!form.name) err.name = 'Name is required'
-    if (!form.idName) err.idName = 'id is required'
+    if (!form.idPoint) err.idPoint = 'id is required'
     if (!form.localization) err.localization = 'localization is required' 
+    console.log(err);
     return err
   }
 
@@ -105,7 +107,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
           type="text"
           maxLength="20"
           name="idPoint"
-          value={form.idPoint}
+          value={form.idPoint || ''}
           onChange={handleChange}
           required
         />
@@ -115,7 +117,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
           type="text"
           maxLength="20"
           name="name"
-          value={form.name}
+          value={form.name || ''}
           onChange={handleChange}
           required
         />
@@ -125,17 +127,17 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
           type="text"
           maxLength="500"
           name="roles"
-          value={form.roles}
+          value={form.roles || ''}
           onChange={handleChange}
           required
         />
 
-        <label htmlFor="loc">Localisation</label>
+        <label htmlFor="localization">Localisation</label>
         <input
           type="text"
           maxLength="30"
-          name="loc"
-          value={form.localization}
+          name="localization"
+          value={form.localization || ''}
           onChange={handleChange}
           required
         />

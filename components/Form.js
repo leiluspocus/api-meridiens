@@ -2,30 +2,25 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { mutate } from 'swr'
 
-const Form = ({ formId, petForm, forNewPet = true }) => {
+const Form = ({ formId, pointForm, forNewPoint = true }) => {
   const router = useRouter()
   const contentType = 'application/json'
   const [errors, setErrors] = useState({})
   const [message, setMessage] = useState('')
 
   const [form, setForm] = useState({
-    name: petForm.name,
-    owner_name: petForm.owner_name,
-    species: petForm.species,
-    age: petForm.age,
-    poddy_trained: petForm.poddy_trained,
-    diet: petForm.diet,
-    image_url: petForm.image_url,
-    likes: petForm.likes,
-    dislikes: petForm.dislikes,
-  })
+    idPoint: pointForm.idPoint,
+    name: pointForm.name,
+    localization: pointForm.localization,
+    roles: pointForm.roles
+  });
 
   /* The PUT method edits an existing entry in the mongodb database. */
   const putData = async (form) => {
     const { id } = router.query
 
     try {
-      const res = await fetch(`/api/pets/${id}`, {
+      const res = await fetch(`/api/points/${id}`, {
         method: 'PUT',
         headers: {
           Accept: contentType,
@@ -41,17 +36,17 @@ const Form = ({ formId, petForm, forNewPet = true }) => {
 
       const { data } = await res.json()
 
-      mutate(`/api/pets/${id}`, data, false) // Update the local data without a revalidation
+      mutate(`/api/points/${id}`, data, false) // Update the local data without a revalidation
       router.push('/')
     } catch (error) {
-      setMessage('Failed to update pet')
+      setMessage('Failed to update point')
     }
   }
 
   /* The POST method adds a new entry in the mongodb database. */
   const postData = async (form) => {
     try {
-      const res = await fetch('/api/pets', {
+      const res = await fetch('/api/points', {
         method: 'POST',
         headers: {
           Accept: contentType,
@@ -67,15 +62,15 @@ const Form = ({ formId, petForm, forNewPet = true }) => {
 
       router.push('/')
     } catch (error) {
-      setMessage('Failed to add pet')
+      setMessage('Failed to add point')
     }
   }
 
+
   const handleChange = (e) => {
-    const target = e.target
-    const value =
-      target.name === 'poddy_trained' ? target.checked : target.value
-    const name = target.name
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
 
     setForm({
       ...form,
@@ -87,26 +82,35 @@ const Form = ({ formId, petForm, forNewPet = true }) => {
     e.preventDefault()
     const errs = formValidate()
     if (Object.keys(errs).length === 0) {
-      forNewPet ? postData(form) : putData(form)
+      forNewPoint ? postData(form) : putData(form)
     } else {
       setErrors({ errs })
     }
   }
 
-  /* Makes sure pet info is filled for pet name, owner name, species, and image url*/
+  /* Makes sure point info is filled for point name, owner name, species, and image url*/
   const formValidate = () => {
     let err = {}
     if (!form.name) err.name = 'Name is required'
-    if (!form.owner_name) err.owner_name = 'Owner is required'
-    if (!form.species) err.species = 'Species is required'
-    if (!form.image_url) err.image_url = 'Image URL is required'
+    if (!form.idName) err.idName = 'id is required'
+    if (!form.localization) err.localization = 'localization is required' 
     return err
   }
 
   return (
     <>
       <form id={formId} onSubmit={handleSubmit}>
-        <label htmlFor="name">Name</label>
+        <label htmlFor="idPoint">Numéro du point</label>
+        <input
+          type="text"
+          maxLength="20"
+          name="idPoint"
+          value={form.idPoint}
+          onChange={handleChange}
+          required
+        />
+
+        <label htmlFor="name">Nom du point</label>
         <input
           type="text"
           maxLength="20"
@@ -116,45 +120,29 @@ const Form = ({ formId, petForm, forNewPet = true }) => {
           required
         />
 
-        <label htmlFor="owner_name">Owner</label>
+        <label htmlFor="roles">Rôles</label>
         <input
           type="text"
-          maxLength="20"
-          name="owner_name"
-          value={form.owner_name}
+          maxLength="500"
+          name="roles"
+          value={form.roles}
           onChange={handleChange}
           required
         />
 
-        <label htmlFor="species">Species</label>
+        <label htmlFor="loc">Localisation</label>
         <input
           type="text"
           maxLength="30"
-          name="species"
-          value={form.species}
+          name="loc"
+          value={form.localization}
           onChange={handleChange}
           required
-        />
-
-        <label htmlFor="age">Age</label>
-        <input
-          type="number"
-          name="age"
-          value={form.age}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="poddy_trained">Potty Trained</label>
-        <input
-          type="checkbox"
-          name="poddy_trained"
-          checked={form.poddy_trained}
-          onChange={handleChange}
         />
 
 
         <button type="submit" className="btn">
-          Submit
+          Envoyer
         </button>
       </form>
       <p>{message}</p>

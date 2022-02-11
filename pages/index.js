@@ -1,65 +1,49 @@
-import Link from 'next/link'
-import dbConnect from '../lib/dbConnect'
-import Pet from '../models/Pet'
+import Link from 'next/link';
+import dbConnect from '../lib/dbConnect';
+import Point from '../models/Point';
 
-const Index = ({ pets }) => (
-  <>
-    {/* Create a card for each pet */}
-    {pets.map((pet) => (
-      <div key={pet._id}>
+const Index = ({ points }) => {
+	const randomInt = Math.ceil(Math.random() * (points.length - 1));
+  const point = points[randomInt];
+  return (
+    <>
+      <div key={point._id}>
+        <button>🔮</button> <br />
         <div className="card">
-          <img src={pet.image_url} />
-          <h5 className="pet-name">{pet.name}</h5>
+          <h5 className="point-id">{point.idPoint}</h5>
           <div className="main-content">
-            <p className="pet-name">{pet.name}</p>
-            <p className="owner">Owner: {pet.owner_name}</p>
-
-            {/* Extra Pet Info: Likes and Dislikes */}
-            <div className="likes info">
-              <p className="label">Likes</p>
-              <ul>
-                {pet.likes.map((data, index) => (
-                  <li key={index}>{data} </li>
-                ))}
-              </ul>
-            </div>
-            <div className="dislikes info">
-              <p className="label">Dislikes</p>
-              <ul>
-                {pet.dislikes.map((data, index) => (
-                  <li key={index}>{data} </li>
-                ))}
-              </ul>
-            </div>
+            <p className="point-name">{point.name}</p>
+            <p className="localization">Localisation: {point.localization}</p>
+            <p className="roles">Rôles: {point.roles}</p>
 
             <div className="btn-container">
-              <Link href="/[id]/edit" as={`/${pet._id}/edit`}>
+              <Link href="/[id]/edit" as={`/${point._id}/edit`}>
                 <button className="btn edit">Edit</button>
               </Link>
-              <Link href="/[id]" as={`/${pet._id}`}>
+              <Link href="/[id]" as={`/${point._id}`}>
                 <button className="btn view">View</button>
               </Link>
             </div>
           </div>
         </div>
       </div>
-    ))}
-  </>
-)
+    </>
+  )
+};
 
-/* Retrieves pet(s) data from mongodb database */
+/* Retrieves point(s) data from mongodb database */
 export async function getServerSideProps() {
-  await dbConnect()
+	await dbConnect();
 
-  /* find all the data in our database */
-  const result = await Pet.find({})
-  const pets = result.map((doc) => {
-    const pet = doc.toObject()
-    pet._id = pet._id.toString()
-    return pet
-  })
+	/* find all the data in our database */
+	const result = await Point.find({});
+	const points = result.map((doc) => {
+		const point = doc.toObject();
+		point._id = point._id.toString();
+		return point;
+	});
 
-  return { props: { pets: pets } }
+	return { props: { points: points } };
 }
 
-export default Index
+export default Index;

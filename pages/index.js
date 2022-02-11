@@ -20,7 +20,9 @@ const Index = ({ points }) => {
           <div className="main-content">
             <p className="point-name">{point.name}</p>
             <p className="localization"><span>Localisation</span>{point.localization}</p>
-            <p className="roles"><span>Rôles</span> {point.roles}</p>
+            <p className="roles"><span>Rôles</span> 
+              {point.roles !== '' ? point.roles : 'Aucun' }
+            </p>
 
             <div className="btn-container">
               <Link href="/[id]/edit" as={`/${point._id}/edit`}>

@@ -5,12 +5,12 @@ const PointSchema = new mongoose.Schema({
 	idPoint: {
 		type: String,
 		required: [ true, 'Un point a forcément un numéro.' ],
-		maxlength: [ 20, 'Name cannot be more than 60 characters' ]
+		maxlength: [ 500, 'Name cannot be more than 500 characters' ]
 	},
 	name: {
 		type: String,
 		required: [ true, 'Un point a forcément un nom.' ],
-		maxlength: [ 20, 'Name cannot be more than 60 characters' ]
+		maxlength: [ 500, 'Name cannot be more than 500 characters' ]
 	},
 	roles: {
 		type: String,

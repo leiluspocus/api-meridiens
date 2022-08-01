@@ -105,7 +105,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
         <label htmlFor="idPoint">Numéro du point</label>
         <input
           type="text"
-          maxLength="20"
+          maxLength="500"
           name="idPoint"
           value={form.idPoint || ''}
           onChange={handleChange}
@@ -115,7 +115,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
         <label htmlFor="name">Nom du point</label>
         <input
           type="text"
-          maxLength="20"
+          maxLength="500"
           name="name"
           value={form.name || ''}
           onChange={handleChange}
@@ -135,7 +135,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
         <label htmlFor="localization">Localisation</label>
         <input
           type="text"
-          maxLength="30"
+          maxLength="500"
           name="localization"
           value={form.localization || ''}
           onChange={handleChange}

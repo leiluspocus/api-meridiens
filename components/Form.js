@@ -94,7 +94,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
     let err = {}
     if (!form.name) err.name = 'Name is required'
     if (!form.idPoint) err.idPoint = 'id is required'
-    if (!form.localization) err.localization = 'localization is required' 
+    if (!form.localization) err.localization = 'localization is required'
     console.log(err);
     return err
   }

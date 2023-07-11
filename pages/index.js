@@ -4,36 +4,37 @@ import dbConnect from '../lib/dbConnect';
 import Point from '../models/Point';
 
 const Index = ({ points }) => {
-  const [randomInt, setRandom] = useState(0);
+  const generateInt = () => {
+    return Math.ceil(Math.random() * (points.length - 1))
+  }
+  const [randomInt, setRandom] = useState(generateInt());
+  const [display, setDisplay] = useState(false);
   const point = points[randomInt];
 
 
   const randomize = () => {
-    setRandom(Math.ceil(Math.random() * (points.length - 1)));
+    setDisplay(false)
+    setRandom(generateInt());
   }
   return (
     <>
+      <button onClick={randomize}>🔮</button>
       <div key={point._id} className="main-container">
-        <button onClick={randomize}>🔮</button> <br />
-        <div className="card">
+        <div className="to-guess">
           <h5 className="point-id">{point.idPoint}</h5>
-          <div className="main-content">
+          <div class="toggle" onClick={() => {setDisplay(!display); console.log(!display)}}>{display? 'Cacher' : 'Révéler'}</div>
+        </div>
+        {
+          display &&
+          <div className="card-content">
             <p className="point-name">{point.name}</p>
-            <p className="localization"><span>Localisation</span>{point.localization}</p>
-            <p className="roles"><span>Rôles</span> 
+            <p className="localization">{point.localization}</p>
+            <span><u>Rôles</u></span>
+            <p className="roles">
               {point.roles !== '' ? point.roles : 'Aucun' }
             </p>
-
-            <div className="btn-container">
-              <Link href="/[id]/edit" as={`/${point._id}/edit`}>
-                <button className="btn edit">Edit</button>
-              </Link>
-              <Link href="/[id]" as={`/${point._id}`}>
-                <button className="btn view">View</button>
-              </Link>
-            </div>
           </div>
-        </div>
+        }
       </div>
     </>
   )

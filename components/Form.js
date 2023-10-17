@@ -17,10 +17,10 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
 
   /* The PUT method edits an existing entry in the mongodb database. */
   const putData = async (form) => {
-    const { idPoint } = router.query
+    const { id } = router.query
 
     try {
-      const res = await fetch(`/api/points/${idPoint}`, {
+      const res = await fetch(`/api/points/${id}`, {
         method: 'PUT',
         headers: {
           Accept: contentType,
@@ -36,10 +36,11 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
 
       const { data } = await res.json()
 
-      mutate(`/api/points/${idPoint}`, data, false) // Update the local data without a revalidation
-      router.push('/')
+      mutate(`/api/points/${id}`, data, false) // Update the local data without a revalidation
+      setMessage('🥳 Edité avec succès ! Redirection dans 3 secondes ...')
+      setTimeout(() => router.push('/'), 3000);
     } catch (error) {
-      setMessage('Failed to update point')
+      setMessage('❌ La mise à jour a échoué !')
     }
   }
 
@@ -57,13 +58,13 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
 
       // Throw error with status code in case Fetch API req failed
       if (!res.ok) {
-        console.log(res);
         throw new Error(res.status)
       }
 
-      router.push('/')
+      setMessage('🥳 Ajouté avec succès ! Redirection dans 3 secondes ...')
+      setTimeout(() => router.push('/'), 3000);
     } catch (error) {
-      setMessage('Failed to add point')
+      setMessage('❌ L\'ajout a échoué')
     }
   }
 
@@ -95,7 +96,6 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
     if (!form.name) err.name = 'Name is required'
     if (!form.idPoint) err.idPoint = 'id is required'
     if (!form.localization) err.localization = 'localization is required'
-    console.log(err);
     return err
   }
 
@@ -103,8 +103,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
     <>
       <form id={formId} onSubmit={handleSubmit}>
         <label htmlFor="idPoint">Numéro du point</label>
-        <input
-          type="text"
+        <textarea
           maxLength="500"
           name="idPoint"
           value={form.idPoint || ''}
@@ -113,8 +112,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
         />
 
         <label htmlFor="name">Nom du point</label>
-        <input
-          type="text"
+        <textarea
           maxLength="500"
           name="name"
           value={form.name || ''}
@@ -123,8 +121,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
         />
 
         <label htmlFor="roles">Rôles</label>
-        <input
-          type="text"
+        <textarea
           maxLength="500"
           name="roles"
           value={form.roles || ''}
@@ -133,8 +130,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
         />
 
         <label htmlFor="localization">Localisation</label>
-        <input
-          type="text"
+        <textarea
           maxLength="500"
           name="localization"
           value={form.localization || ''}
@@ -147,7 +143,7 @@ const Form = ({ formId, pointForm, forNewPoint = true }) => {
           Envoyer
         </button>
       </form>
-      <p>{message}</p>
+      {message && <p className="feedbackMessage">{message}</p>}
       <div>
         {Object.keys(errors).map((err, index) => (
           <li key={index}>{err}</li>

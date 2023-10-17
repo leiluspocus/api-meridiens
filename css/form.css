@@ -1,8 +1,3 @@
-form {
-  width: 90%;
-  margin: auto;
-  max-width: 550px;
-}
 input,
 form button,
 label {
@@ -34,6 +29,8 @@ form button {
   margin-top: 20px;
 }
 
-.form-container {
-  width: 90%;
+.feedbackMessage {
+  background-color: #eee;
+  padding: 12px;
+  border: 1px dotted black;
 }

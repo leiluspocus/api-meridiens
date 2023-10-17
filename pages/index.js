@@ -3,36 +3,42 @@ import Link from 'next/link';
 import dbConnect from '../lib/dbConnect';
 import Point from '../models/Point';
 
-const Index = ({ points }) => {
-  const generateInt = () => {
-    return Math.ceil(Math.random() * (points.length - 1))
+const generateInt = (points) => {
+  if (points === undefined) {
+    return 0;
   }
-  const [randomInt, setRandom] = useState(generateInt());
+  return Math.ceil(Math.random() * (points.length - 1))
+}
+
+const Index = ({ points, ssrGeneratedInt }) => {
+
+  const [randomInt, setRandom] = useState(ssrGeneratedInt);
   const [display, setDisplay] = useState(false);
-  const point = points[randomInt];
-
-
   const randomize = () => {
     setDisplay(false)
-    setRandom(generateInt());
+    setRandom(generateInt(points));
   }
+
   return (
     <>
       <button onClick={randomize}>🔮</button>
-      <div key={point._id} className="main-container">
+      <div key={points[randomInt]._id} className="main-container">
         <div className="to-guess">
-          <h5 className="point-id">{point.idPoint}</h5>
-          <div class="toggle" onClick={() => {setDisplay(!display); console.log(!display)}}>{display? 'Cacher' : 'Révéler'}</div>
+          <h5 className="point-id">{points[randomInt].idPoint}</h5>
+          <div className="toggle" onClick={() => {setDisplay(!display);}}>{display? 'Cacher' : 'Révéler'}</div>
         </div>
         {
           display &&
           <div className="card-content">
-            <p className="point-name">{point.name}</p>
-            <p className="localization">{point.localization}</p>
+            <p className="point-name">{points[randomInt].name}</p>
+            <p className="localization">{points[randomInt].localization}</p>
             <span><u>Rôles</u></span>
             <p className="roles">
-              {point.roles !== '' ? point.roles : 'Aucun' }
+              {points[randomInt].roles !== '' ? points[randomInt].roles : 'Aucun' }
             </p>
+            <Link href="/[id]/edit" as={`/${points[randomInt]._id}/edit`}>
+              <button className="btn edit">Editer</button>
+            </Link>
           </div>
         }
       </div>
@@ -52,7 +58,7 @@ export async function getServerSideProps() {
 		return point;
 	});
 
-	return { props: { points: points } };
+	return { props: { points: points, ssrGeneratedInt: generateInt(points) } };
 }
 
 export default Index;
